@@ -25,8 +25,10 @@ import com.github.mikephil.charting.utils.MPPointF;
 import com.weighttracker.app.R;
 import com.weighttracker.app.data.GoalDatabase;
 import com.weighttracker.app.data.WeightDatabase;
+
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import model.WeightEntry;
 
@@ -38,6 +40,15 @@ public class GraphFragment extends Fragment {
 
     private LineChart chart;
     private WeightDatabase weightDatabase;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("M/d/yyyy", java.util.Locale.US);
+    private static java.time.LocalDate parseDate(String s) {
+        try {
+            return java.time.LocalDate.parse(s, FORMATTER);
+        }
+        catch (Exception e) {
+            return java.time.LocalDate.MIN;
+        }
+    }
 
     @Nullable
     @Override
@@ -74,9 +85,6 @@ public class GraphFragment extends Fragment {
             chart.clear();
             return;
         }
-
-        // Needed to set the order from oldest to newest
-        Collections.reverse(list);
 
         // list of dates used by the marker bubble
         ArrayList<String> dates = new ArrayList<>(list.size());
@@ -202,19 +210,21 @@ public class GraphFragment extends Fragment {
         SharedPreferences prefs = requireActivity().getSharedPreferences("myprefs", Context.MODE_PRIVATE);
         String user = prefs.getString("logged_in_username", "");
 
-        Cursor cursor = weightDatabase.getUserWeights(user);
-        if (cursor != null) {
-            int colId = cursor.getColumnIndex("_id");
-            int colDate = cursor.getColumnIndex("date");
-            int colWeight = cursor.getColumnIndex("weight");
+        try (Cursor cursor = weightDatabase.getUserWeights(user)) {
+            int colId = cursor.getColumnIndexOrThrow("_id");
+            int colDate = cursor.getColumnIndexOrThrow("date");
+            int colWeight = cursor.getColumnIndexOrThrow("weight");
             while (cursor.moveToNext()) {
-                int id = cursor.getInt(colId);
-                String date = cursor.getString(colDate);
-                String weight = cursor.getString(colWeight);
-                out.add(new WeightEntry(id, date, weight));
+                out.add(new WeightEntry(
+                        cursor.getInt(colId),
+                        cursor.getString(colDate),
+                        cursor.getString(colWeight)
+                ));
             }
-            cursor.close();
         }
+
+        // Sets the graph from oldest to newest
+        out.sort(Comparator.comparing(a -> parseDate(a.getDate())));
         return out;
     }
 
