@@ -3,7 +3,7 @@
 ## Overview
 For this enhancement, I added a **merge sort** to the weight entries.  
 The merge sort lets users sort the weight list by date to either newest to oldest or oldest to newest.
-This makes the app easier to use because people can quickly view their progress in the order that works best for them.
+This makes the app easier to use because people can view their progress in the order that works best for them.
 
 ## New Files
 - `weight_log_menu.xml` – Adds the Sort button to the toolbar.
