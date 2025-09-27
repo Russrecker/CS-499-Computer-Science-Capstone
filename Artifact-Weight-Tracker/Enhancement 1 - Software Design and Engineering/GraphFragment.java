@@ -40,6 +40,8 @@ public class GraphFragment extends Fragment {
 
     private LineChart chart;
     private WeightDatabase weightDatabase;
+    private static final String PREFS = "myprefs";
+    private static final String KEY_USERNAME = "logged_in_username";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("M/d/yyyy", java.util.Locale.US);
     private static java.time.LocalDate parseDate(String s) {
         try {
@@ -207,8 +209,8 @@ public class GraphFragment extends Fragment {
     private ArrayList<WeightEntry> getWeights() {
         ArrayList<WeightEntry> out = new ArrayList<>();
 
-        SharedPreferences prefs = requireActivity().getSharedPreferences("myprefs", Context.MODE_PRIVATE);
-        String user = prefs.getString("logged_in_username", "");
+        SharedPreferences prefs = requireActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        String user = prefs.getString(KEY_USERNAME, "");
 
         try (Cursor cursor = weightDatabase.getUserWeights(user)) {
             int colId = cursor.getColumnIndexOrThrow("_id");
@@ -237,8 +239,8 @@ public class GraphFragment extends Fragment {
     private float goalLine(YAxis yAxis) {
         float goal = -1f;
 
-        SharedPreferences prefs = requireActivity().getSharedPreferences("myprefs", Context.MODE_PRIVATE);
-        String user = prefs.getString("logged_in_username", "");
+        SharedPreferences prefs = requireActivity().getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        String user = prefs.getString(KEY_USERNAME, "");
 
         try (GoalDatabase goalDatabase = new GoalDatabase(requireContext())) {
             goal = goalDatabase.getGoalWeight(user);
