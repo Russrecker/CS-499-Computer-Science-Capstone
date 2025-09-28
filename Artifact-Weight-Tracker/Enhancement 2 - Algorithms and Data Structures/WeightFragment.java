@@ -11,22 +11,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
-
 import androidx.annotation.NonNull;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.DividerItemDecoration;
-
 import com.weighttracker.app.R;
 import com.weighttracker.app.data.WeightDatabase;
 import com.weighttracker.app.databinding.FragmentWeightBinding;
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
 import model.WeightEntry;
 
 /**
@@ -246,8 +242,8 @@ public class WeightFragment extends Fragment implements AddWeightDialogFragment.
         int i = 0, j = 0;
 
         while (i < left.size() && j < right.size()) {
-            LocalDate dateLeft  = parseDate(left.get(i).getDate());
-            LocalDate dateRight = parseDate(right.get(j).getDate());
+            LocalDate dateLeft  = convertDate(left.get(i).getDate());
+            LocalDate dateRight = convertDate(right.get(j).getDate());
 
             // Keep order when dates match
             if (!dateLeft.isAfter(dateRight)) {
@@ -268,7 +264,7 @@ public class WeightFragment extends Fragment implements AddWeightDialogFragment.
      * @param monthDayYear the date string from the entry
      * @return a LocalDate object
      */
-    private LocalDate parseDate(String monthDayYear) {
+    private LocalDate convertDate(String monthDayYear) {
         try {
             return LocalDate.parse(monthDayYear, FORMATTER);
         } catch (Exception ignore) {
