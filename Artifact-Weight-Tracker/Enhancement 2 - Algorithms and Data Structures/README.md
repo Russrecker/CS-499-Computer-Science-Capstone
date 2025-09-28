@@ -54,8 +54,8 @@ private List<WeightEntry> merge(List<WeightEntry> left, List<WeightEntry> right)
         int i = 0, j = 0;
 
         while (i < left.size() && j < right.size()) {
-            LocalDate dateLeft  = parseDate(left.get(i).getDate());
-            LocalDate dateRight = parseDate(right.get(j).getDate());
+            LocalDate dateLeft  = convertDate(left.get(i).getDate());
+            LocalDate dateRight = convertDate(right.get(j).getDate());
 
             // Keep order when dates match
             if (!dateLeft.isAfter(dateRight)) {
@@ -70,7 +70,7 @@ private List<WeightEntry> merge(List<WeightEntry> left, List<WeightEntry> right)
         return result;
     }
 
-private LocalDate parseDate(String monthDayYear) {
+private LocalDate convertDate(String monthDayYear) {
         try {
             return LocalDate.parse(monthDayYear, FORMATTER);
         } catch (Exception ignore) {
