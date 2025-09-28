@@ -26,7 +26,7 @@ import java.util.List;
 import model.WeightEntry;
 
 /**
- * Shows all weight entries. You can add, edit, or delete.
+ * Shows all weight entries. You can add, edit, delete, and sort them by date..
  *
  */
 public class WeightFragment extends Fragment implements AddWeightDialogFragment.AddWeightDialogListener {
