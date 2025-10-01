@@ -9,35 +9,41 @@ This makes the app easier to use and shows I can design features that improve th
 - `GraphFragment.java` – Fragment that handles the line chart.  
 - `fragment_graph.xml` – Layout for the graph screen.  
 
-## Modified Files (Snippets)
+## Modified Files
+- `bottom_nav_menu.xml` - Added a menu item for the Graph screen.
+- `mobile_navigation.xml` - Registered the new graph fragment
+- `MainActivity.java` - Linked the Graph screen to the nav bar.
 
-### MainActivity.java
-Added the graph screen to the top-level navigation:
+## Code from Graph (Snippets)
+
+GraphFragment.java - Get Weights and Sort by Date
 
 ```java
-// These are the main screens (weight, settings, graph and notes)
-AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-        R.id.navigation_weight, R.id.navigation_settings, R.id.navigation_graph).build();
+out.sort(Comparator.comparing(a -> parseDate(a.getDate())));
+return out;
 ```
 
-### mobile_navigation.xml
-
-Registered the new graph fragment:
+GraphFragment.java - Build the Points and Line
 
 ```java
-<fragment
-    android:id="@+id/navigation_graph"
-    android:name="com.weighttracker.app.ui.graph.GraphFragment"
-    android:label="@string/title_graph"
-    tools:layout="@layout/fragment_graph" />
+LineDataSet dataSet = new LineDataSet(points, "");
+dataSet.setLineWidth(2f);
+dataSet.setCircleRadius(4.0f);
+dataSet.setDrawFilled(true);
+chart.setData(new LineData(dataSet));
 ```
-### bottom_nav_menu.xml
 
-Added a menu item for the graph tab:
+GraphFragment.java - Add Goal Line
 
 ```java
-<!-- Graph -->
-<item
-    android:id="@+id/navigation_graph"
-    android:icon="@drawable/outline_planner_review_24"
-    android:title="@string/title_graph" />
+LimitLine line = new LimitLine(goal, "\uD83C\uDFC6");
+line.setLineColor(ResourcesCompat.getColor(getResources(), R.color.gray, null));
+yAxis.addLimitLine(line);
+```
+
+GraphFragment.java - Date Bubble
+
+```java
+DateBubble bubble = new DateBubble(requireContext(), R.layout.date_bubble, dates);
+chart.setMarker(bubble);
+```
